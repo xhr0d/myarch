@@ -1,0 +1,13 @@
+# COPY THE FILES
+sudo tar -C / -czf ~/Projects/boot-bkp/boot-backup.tar.gz boot
+sudo efibootmgr > ~/Projects/boot-bkp/efiboot-backup.txt
+
+
+#RESTORE THEM
+sudo rm -rf /boot/*
+sudo tar -C / -xzf ~/Projects/boot-bkp/boot-backup.tar.gz
+
+
+#DELETE BOOT ENTRY
+sudo efibootmgr #check
+sudo efibootmgr -b <0003> -B

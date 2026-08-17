@@ -1,0 +1,4 @@
+lsblk  #make_sure
+sudo umount /dev/sda*
+sudo dd if=<path/to/iso> of=/dev/sda bs=4M status=progress conv=fsync
+sync

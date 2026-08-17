@@ -1,0 +1,128 @@
+#ARCH(minimal)
+iwctl
+device wlan0 set-property powered on
+station wlan0 connect backdoor_active
+ping -c 3 archlinux.org
+pacman -Sy
+pacman -S archlinux-keyring archinstall
+archinstall
+
+#AUR(YAY)
+sudo pacman -S --needed base-devel git
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si
+
+#Caelestia
+yay -S caelestia-cli
+caelestia install
+
+
+#pkgs
+sudo pacman -S thunar thunar-archive-plugin tumbler ffmpegthumbnailer gvfs gvfs-mtp file-roller openssh gammastep playerctl telegram-desktop okular mousepad imv yt-dlp mousepad mpv proton-vpn-gtk-app cava anki tailscale discord partitionmanager
+yay -S mpv-mpris sddm-silent-theme bibata-cursor-theme zen-browser-bin motrix-next spotube-bin syncthing
+
+
+#FULL NAME
+sudo chfn -f "محمد إيمانور" im4n
+sudo chfn im4n
+getent passwd im4n
+
+
+#Music-picker script
+cp myarch/music.ini ~/.config/fuzzel/
+mkdir -p ~/.local/bin
+cp myarch/music-picker ~/.local/bin/
+chmod +x ~/.local/bin/music-picker
+ #if error --
+ micro ~/.bash_profile
+ #add:  export PATH="$HOME/.local/bin:$PATH"
+ source ~/.bash_profile
+
+
+#GPU driver problem
+sudo pacman -Rns libva-intel-driver
+sudo pacman -S intel-media-driver libva-utils
+
+
+#MONO audio
+cp -r myarch/pipewire ~/.config/
+systemctl --user restart pipewire pipewire-pulse wireplumber
+
+
+#SDDM theme
+sudo cp myarch/sddm.conf /etc/
+sudo cp myarch/ken.conf /usr/share/sddm/themes/silent/configs/
+cd /usr/share/sddm/themes/silent/ && ./change_avatar.sh im4n '/home/im4n/Pictures/Wallpapers/cyberpunk.png'
+sudo micro metadata.desktop 
+
+
+#MPV config
+cp myarch/mpv ~/.config/
+
+
+#Cursor
+sudo cp myarch/index.theme /usr/share/icons/default/
+cp -r myarch/settings.ini ~/.config/gtk-3.0
+cp -r myarch/settings.ini ~/.config/gtk-4.0
+sudo micro ~/.config/hypr/variables.lua
+ #replace:  cursorTheme = "Bibata-Modern-Ice",
+
+
+#Nuke Firefox
+sudo pacman -Rns firefox
+rm -rf ~/.mozilla
+rm -rf ~/.cache/mozilla
+rm -rf ~/.cache/mozilla-firefox
+rm -rf ~/.local/share/mozilla
+rm -f ~/.local/share/applications/firefox.desktop
+rm -f ~/.local/share/applications/*firefox*
+sudo pacman -Rns $(pacman -Qtdq)
+
+
+
+#SHARED PARTITION
+#delete dirs 
+sudo mkdir -p /shared
+blkid /dev/nvme0n1p3  #find UUID
+sudo micro /etc/fstab
+#add:  UUID=c62012f2-009e-431f-9198-dbb0b16cdcf0  /shared  ext4  defaults  0  2
+sudo systemctl daemon-reload
+sudo mount -a    #either the above one works or this one
+findmnt /shared
+sudo chown -R im4n:im4n /shared   #if permission issue
+ 
+ln -s /shared/Documents ~/Documents
+ln -s /shared/Downloads ~/Downloads
+ln -s /shared/Music ~/Music
+ln -s /shared/Pictures ~/Pictures
+ln -s /shared/Videos ~/Videos
+ln -s /shared/Projects ~/Projects
+ln -s /shared/O.S.M ~/O.S.M
+ln -s /shared/myarch ~/myarch
+
+
+#YT_DLP
+micro ~/.config/fish/config.fish
+   > abbr yt-dlp-cookies 'yt-dlp --cookies-from-browser firefox:"$HOME/.config/zen/rorz6yo9.Default (release)" ""'
+   > abbr yt-dlp-vid 'yt-dlp -f "bv*+ba/b" -o "%(title)s.%(ext)s" --merge-output-format mkv ""'
+        ##find cookies:  find ~/.config -type f -name cookies.sqlite 2>/dev/null
+            /home/im4n/.config/mozilla/firefox/n0vgbg5h.default-release/cookies.sqlite
+            /home/im4n/.config/zen/rorz6yo9.Default (release)/cookies.sqlite
+ 
+
+#EXECS
+    -- Night light (Kolkata)
+    hl.exec_cmd("sleep 50 && gammastep -l 22.5726:88.3639")
+
+    -- Clear cliphist database on login
+    hl.exec_cmd("rm -rf ~/.cache/cliphist") #history ke upar laganeka
+  
+    
+
+
+
+
+
+
+
